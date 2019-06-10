@@ -115,6 +115,8 @@ func (c *Client) Middleware(next http.Handler) http.Handler {
 			// rebuild request, body consumed by previous reading
 			rebuiltBody, _ := json.Marshal(contactRequest)
 			r, _ = http.NewRequest("POST", r.URL.Path, bytes.NewBuffer(rebuiltBody))
+			r.Header.Add("autopilotapikey", accessKey)
+			r.Header.Add("Content-Type", "application/json")
 			rec := httptest.NewRecorder()
 			next.ServeHTTP(rec, r)
 
