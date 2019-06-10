@@ -36,6 +36,7 @@ To ultilize modularization, each module has its own test, simply go to each pack
 ```bash
 $ go test -v
 ```
+Do forget to enter your access key in `api_test.go` to pass the test.
 
 ## Possible Improvements
 
