@@ -85,7 +85,9 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	res.Write(w)
+	w.WriteHeader(res.StatusCode)
+	b, err := ioutil.ReadAll(res.Body)
+	w.Write(b)
 }
 
 // GetHandler queries autopilot via get
@@ -107,5 +109,7 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	res.Write(w)
+	w.WriteHeader(res.StatusCode)
+	b, err := ioutil.ReadAll(res.Body)
+	w.Write(b)
 }
