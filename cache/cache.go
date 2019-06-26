@@ -6,13 +6,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	api "github.com/HenryHK/http-cache-middleware/api"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
 	"strings"
 	"time"
+
+	api "github.com/HenryHK/http-cache-middleware/api"
 )
 
 // Response is the cached response data structure.
@@ -78,9 +79,11 @@ func (c *Client) Middleware(next http.Handler) http.Handler {
 			result := rec.Result()
 
 			value := rec.Body.Bytes()
+			// fmt.Println(rec.Code)
+			// fmt.Println(result.Header)
 			// Naive method to test whether recorder had a successfult return
 			// PS. httptest recorder always have status = 200 from result, need to retrieve from body
-			if strings.Contains(string(value), "200") {
+			if rec.Code == 200 {
 				now := time.Now()
 
 				response := Response{
@@ -121,7 +124,7 @@ func (c *Client) Middleware(next http.Handler) http.Handler {
 			next.ServeHTTP(rec, r)
 
 			value := rec.Body.Bytes()
-			if strings.Contains(string(value), "200") {
+			if rec.Code == 200 {
 				// hacking way to get json from reponse
 				re, _ := regexp.Compile("{[^}]+}")
 				contactID := re.FindString(string(value))
@@ -134,6 +137,7 @@ func (c *Client) Middleware(next http.Handler) http.Handler {
 				c.adapter.Release(key)
 			}
 
+			w.WriteHeader(rec.Code)
 			w.Write(value)
 			return
 		}

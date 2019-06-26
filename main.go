@@ -2,21 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/HenryHK/http-cache-middleware/adapter"
-	api "github.com/HenryHK/http-cache-middleware/api"
-	"github.com/HenryHK/http-cache-middleware/cache"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/HenryHK/http-cache-middleware/adapter"
+	api "github.com/HenryHK/http-cache-middleware/api"
+	"github.com/HenryHK/http-cache-middleware/cache"
 )
 
-func example(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Ok"))
-}
-
 func main() {
-	fmt.Println("Hello, World")
-
+	fmt.Println("Server started")
 	opt := &adapter.RingOptions{
 		Addrs: map[string]string{
 			"server": "localhost:6379",
@@ -38,7 +34,7 @@ func main() {
 
 	// GET Handler
 	http.Handle("/contact/", client.Middleware(getHandler))
-	// POST/DELETE/PUT handler
+	// POST Handler
 	http.Handle("/contact", client.Middleware(postHandler))
 	http.ListenAndServe(":8080", nil)
 }
